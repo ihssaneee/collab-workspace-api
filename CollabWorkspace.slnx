@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/CollabWorkspace.Api/CollabWorkspace.Api.csproj" />
+    <Project Path="src/CollabWorkspace.Domain/CollabWorkspace.Domain.csproj" />
+    <Project Path="src/CollabWorkspace.Infrastructure/CollabWorkspace.Infrastructure.csproj" />
+  </Folder>
+</Solution>
