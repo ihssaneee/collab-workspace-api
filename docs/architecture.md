@@ -1,0 +1,1 @@
+I used EF Core's Fluent API to configure entity mappings and relationships.
