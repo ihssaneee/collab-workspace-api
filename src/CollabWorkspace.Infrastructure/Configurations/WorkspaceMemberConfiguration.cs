@@ -1,6 +1,7 @@
 using CollabWorkspace.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using CollabWorkspace.Infrastructure.Identity;
 
 namespace CollabWorkspace.Infrastructure.Configurations
 {
@@ -11,7 +12,7 @@ namespace CollabWorkspace.Infrastructure.Configurations
             builder.HasKey(workspaceMember => workspaceMember.Id);
 
 
-            builder.HasOne<User>()
+            builder.HasOne<ApplicationUser>()
             .WithMany()
             .HasForeignKey( workspaceMember => workspaceMember.UserId)
             .OnDelete(DeleteBehavior.Restrict);
