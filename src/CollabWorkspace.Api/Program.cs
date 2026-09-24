@@ -32,14 +32,22 @@ builder.Services
         options.MapInboundClaims = false;
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidateIssuer = false,
-            ValidateAudience = false,
+            ValidateIssuer = true,
+            ValidIssuer = builder.Configuration["Authentication:Jwt:Issuer"],
+            ValidateAudience = true,
+            ValidAudience = builder.Configuration["Authentication:Jwt:Audience"],
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(
-                    builder.Configuration["Authentication:Jwt:Secret"]!))
+                    builder.Configuration["Authentication:Jwt:Secret"]!)),
+             ValidAlgorithms = new[]
+                    {
+                        SecurityAlgorithms.HmacSha256
+                    }
         };
+            
+
     });
 
 builder.Services.AddScoped<ITokenService, JwtTokenService>();
@@ -53,6 +61,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
+app.UseAuthorization();
 
 
 

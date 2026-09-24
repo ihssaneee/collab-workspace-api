@@ -30,6 +30,8 @@ namespace CollabWorkspace.Infrastructure.Authentication
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
+                issuer: _jwtOptions.Issuer,
+                audience: _jwtOptions.Audience,
                 claims: claims,
                 expires: DateTime.UtcNow.AddMinutes(_jwtOptions.ExpirationMinutes),
                 signingCredentials: creds
