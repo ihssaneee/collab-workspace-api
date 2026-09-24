@@ -3,6 +3,7 @@ using CollabWorkspace.Infrastructure.Authentication;
 using CollabWorkspace.Infrastructure.Data;
 using CollabWorkspace.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
+using CollabWorkspace.Api.DTOs.Auth;
 
 namespace CollabWorkspace.Api.Controllers
 {
@@ -19,6 +20,48 @@ namespace CollabWorkspace.Api.Controllers
         {
             _tokenService= tokenService;
             _userManager= userManager;
+        }
+
+        [HttpPost("register")]
+        public async Task<IActionResult> Register(RegisterRequest request)
+        {
+            var user = new ApplicationUser
+            {
+                UserName = request.Username,
+                Email = request.Email,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            var result = await _userManager.CreateAsync(user, request.Password);
+
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            return Ok(new { message = "User registered successfully" });
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginRequest request)
+        {
+           var user= await _userManager.FindByNameAsync(request.Username);
+           if(user is null)
+            {
+                 return Unauthorized();
+            }
+
+            var passwordValid= await _userManager.CheckPasswordAsync(user, request.Password);
+
+            if(!passwordValid)
+            {
+                return Unauthorized();
+            }
+
+            var token= _tokenService.GenerateToken(user);
+
+            return Ok(new { token });
         }
 
 
