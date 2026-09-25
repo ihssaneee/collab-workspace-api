@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using CollabWorkspace.Infrastructure.Authentication;
-using CollabWorkspace.Infrastructure.Data;
 using CollabWorkspace.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using CollabWorkspace.Api.DTOs.Auth;
-
+using Microsoft.AspNetCore.Authorization;
+using System.IdentityModel.Tokens.Jwt;
 namespace CollabWorkspace.Api.Controllers
 {
     [ApiController]
@@ -63,6 +63,16 @@ namespace CollabWorkspace.Api.Controllers
 
             return Ok(new { token });
         }
+
+        [Authorize]
+        [HttpGet("me")]
+        public IActionResult Me()
+        {
+          return Ok(new{
+                Username = User.FindFirst(JwtRegisteredClaimNames.UniqueName)?.Value,
+                isAuthenticated= User.Identity?.IsAuthenticated
+            });
+        } 
 
 
         

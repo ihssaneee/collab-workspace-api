@@ -10,6 +10,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using CollabWorkspace.Infrastructure.Authentication;
+using Microsoft.OpenApi;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,7 +27,24 @@ builder.Services.AddControllers();
 
 // Register services needed by Swagger/OpenAPI.
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter your JWT token."
+    });
+
+    options.AddSecurityRequirement(document =>
+        new OpenApiSecurityRequirement
+        {
+            [new OpenApiSecuritySchemeReference("Bearer", document)] = []
+        });
+});
 
 
 // ============================================================
