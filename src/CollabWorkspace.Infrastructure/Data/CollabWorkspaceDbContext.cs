@@ -15,8 +15,12 @@ namespace CollabWorkspace.Infrastructure.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(CollabWorkspaceDbContext).Assembly);
+            modelBuilder.Entity<ApplicationUser>()
+                .HasIndex(u => u.NormalizedEmail)
+                .IsUnique();
 
             base.OnModelCreating(modelBuilder);
+            
         }
         public DbSet<Workspace> Workspaces => Set<Workspace>();
         public DbSet<WorkspaceMember> WorkspaceMembers => Set<WorkspaceMember>();

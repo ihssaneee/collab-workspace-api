@@ -46,7 +46,7 @@ namespace CollabWorkspace.Api.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginRequest request)
         {
-           var user= await _userManager.FindByNameAsync(request.Username);
+           var user= await _userManager.FindByEmailAsync(request.Email);
            if(user is null)
             {
                  return Unauthorized();

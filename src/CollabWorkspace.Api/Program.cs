@@ -69,9 +69,12 @@ builder.Services.AddDbContext<CollabWorkspaceDbContext>(options =>
 // - roles
 //
 // Identity stores its data through our EF Core DbContext.
-builder.Services.AddIdentityCore<ApplicationUser>()
-    .AddRoles<IdentityRole<Guid>>()
-    .AddEntityFrameworkStores<CollabWorkspaceDbContext>();
+builder.Services.AddIdentityCore<ApplicationUser>(options =>
+{
+    options.User.RequireUniqueEmail = true;
+})
+.AddRoles<IdentityRole<Guid>>()
+.AddEntityFrameworkStores<CollabWorkspaceDbContext>();
 
 
 // ============================================================
