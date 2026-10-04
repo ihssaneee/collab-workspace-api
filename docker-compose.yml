@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  database:
+    image: postgres:15
+    container_name: collab-db
+    environment:
+      - POSTGRES-DB=${DB_NAME}
+      - POSTGRES-USER=${DB_USER}
+      - POSTGRES-PASSWORD=${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  backend:
+    build: .
+    container_name: collab-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=${DB_HOST};Port=${DB_PORT};Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD};
+      - Authentication__Jwt__Secret=${JWT_SECRET}
+      - Authentication__Jwt__Issuer=${JWT_ISSUER}
+      - Authentication__Jwt__Audience=${JWT_AUDIENCE}
+      - Authentication__Jwt__ExpirationMinutes=${JWT_EXPIRATION_MINUTES}
+
+    depends_on:
+      - database
+volumes:
+    pgdata:
