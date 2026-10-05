@@ -1,0 +1,28 @@
+# Intermediate and Compiled Build Outputs 
+bin/
+obj/
+
+# Local .NET Tools and Cache directories
+.paket/
+.kpm/
+.nuget/
+packages/
+
+# Source Control & Configuration secrets
+.git
+.gitignore
+.env
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# User Secrets & IDE configurations
+.vs/
+.vscode/
+*.user
+*.suo
+*.sln.docstates
+
+# Operating System garbage files
+Thumbs.db
+.DS_Store
