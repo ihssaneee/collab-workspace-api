@@ -1,0 +1,10 @@
+name: Gemini PR Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  review:
+    uses: ./.github/workflows/gemini-review.yml
+    secrets: inherit
