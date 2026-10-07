@@ -25,6 +25,19 @@ var builder = WebApplication.CreateBuilder(args);
 // Register controller support so ASP.NET Core can discover controllers.
 builder.Services.AddControllers();
 
+var myAngularPolicy = "_myAngularPolicy";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: myAngularPolicy,
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200") 
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
 // Register services needed by Swagger/OpenAPI.
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -167,6 +180,9 @@ app.UseHttpsRedirection();
 
 // Authenticate the request and build HttpContext.User.
 app.UseAuthentication();
+
+// Enable CORS.
+app.UseCors(myAngularPolicy);
 
 // Check whether the authenticated user is allowed
 // to access the requested resource.
