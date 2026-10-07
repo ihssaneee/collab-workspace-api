@@ -178,11 +178,12 @@ if (app.Environment.IsDevelopment())
 // Redirect HTTP requests to HTTPS.
 app.UseHttpsRedirection();
 
+// Enable CORS.
+app.UseCors(myAngularPolicy);
+
 // Authenticate the request and build HttpContext.User.
 app.UseAuthentication();
 
-// Enable CORS.
-app.UseCors(myAngularPolicy);
 
 // Check whether the authenticated user is allowed
 // to access the requested resource.
