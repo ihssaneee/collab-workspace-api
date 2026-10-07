@@ -4,6 +4,12 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+  id-token: write
+
 jobs:
   review:
     uses: ./.github/workflows/gemini-review.yml
