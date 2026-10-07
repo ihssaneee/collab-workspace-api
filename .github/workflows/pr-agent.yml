@@ -12,6 +12,7 @@ jobs:
       issues: write
       pull-requests: write
       contents: write
+      checks: write
 
     steps:
       - name: PR Agent review
@@ -22,7 +23,12 @@ jobs:
           openrouter__key: ${{ secrets.OPENROUTER_API_KEY }}
 
           config.model: "openrouter/free"
+          config.output_run_details: "true"
+          config.output_run_cost: "true"
 
           github_action_config.auto_review: "true"
           github_action_config.auto_describe: "false"
           github_action_config.auto_improve: "false"
+
+          pr_reviewer.publish_output_no_suggestions: "true"
+          pr_reviewer.persistent_comment: "false"
