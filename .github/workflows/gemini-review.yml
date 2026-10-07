@@ -1,0 +1,46 @@
+name: Gemini Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Gemini review
+        uses: google-github-actions/run-gemini-cli@v0
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        with:
+          prompt: |
+            Review this pull request as a senior .NET backend engineer.
+
+            Read GEMINI.md before reviewing.
+
+            Review only. Do not modify files, create commits, or apply fixes.
+
+            Focus on meaningful:
+            - correctness issues
+            - security issues
+            - authentication and authorization problems
+            - middleware and CORS problems
+            - EF Core and database issues
+            - architecture violations
+            - API design problems
+            - maintainability problems
+            - missing important tests
+
+            Do not report stylistic preferences as problems.
+
+            For each meaningful finding, explain:
+            1. What is wrong
+            2. Why it matters
+            3. Where it occurs
+            4. What direction the fix should take
+            5. What the fix should look like
