@@ -2,6 +2,7 @@ using CollabWorkspace.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using CollabWorkspace.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
+using CollabWorkspace.Infrastructure.Authentication;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace CollabWorkspace.Infrastructure.Data
@@ -26,5 +27,7 @@ namespace CollabWorkspace.Infrastructure.Data
         public DbSet<WorkspaceMember> WorkspaceMembers => Set<WorkspaceMember>();
         public DbSet<Document> Documents => Set<Document>();
         public DbSet<DocumentBlock> DocumentBlocks => Set<DocumentBlock>();
+
+        public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
     }
 }

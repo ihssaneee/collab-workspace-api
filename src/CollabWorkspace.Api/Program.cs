@@ -29,13 +29,14 @@ var myAngularPolicy = "_myAngularPolicy";
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: myAngularPolicy,
-        policy =>
-        {
-            policy.WithOrigins("http://localhost:4200") 
-                  .AllowAnyHeader()
-                  .AllowAnyMethod();
-        });
+    options.AddPolicy( name: myAngularPolicy, policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:4200")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
 });
 
 // Register services needed by Swagger/OpenAPI.
@@ -96,8 +97,11 @@ builder.Services.AddIdentityCore<ApplicationUser>(options =>
 
 // Bind the "Authentication:Jwt" configuration section
 // to the JwtOptions class so we can inject JWT settings.
-builder.Services.Configure<JwtOptions>(
-    builder.Configuration.GetSection("Authentication:Jwt"));
+builder.Services
+    .AddOptions<JwtOptions>()
+    .Bind(builder.Configuration.GetSection("Authentication:Jwt"))
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
 
 
 // ============================================================
@@ -142,6 +146,7 @@ builder.Services
         };
     });
 
+builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
 
 // ============================================================
 // Authorization
