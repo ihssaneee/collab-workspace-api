@@ -7,7 +7,7 @@ using CollabWorkspace.Infrastructure.Identity;
 
 namespace CollabWorkspace.Infrastructure.Authentication
 {
-    public class JwtTokenService : ITokenService
+    public sealed class JwtTokenService : ITokenService
     {
 
         private readonly JwtOptions _jwtOptions;
