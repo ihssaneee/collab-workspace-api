@@ -11,8 +11,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using CollabWorkspace.Infrastructure.Authentication;
 using Microsoft.OpenApi;
-using System.Security.Claims;
-using System.IdentityModel.Tokens.Jwt;
+using CollabWorkspace.Infrastructure.Services;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -103,6 +103,7 @@ builder.Services
     .ValidateDataAnnotations()
     .ValidateOnStart();
 
+builder.Services.AddScoped<IWorkspaceService, WorkspaceService>();
 
 // ============================================================
 // Authentication

@@ -18,8 +18,8 @@ namespace CollabWorkspace.Infrastructure.Configurations
             .OnDelete(DeleteBehavior.Restrict);
 
 
-            builder.HasOne<Workspace>()
-            .WithMany()
+            builder.HasOne(workspaceMember => workspaceMember.Workspace)
+            .WithMany(workspace => workspace.Members)
             .HasForeignKey( workspaceMember => workspaceMember.WorkspaceId)
             .OnDelete(DeleteBehavior.Cascade);
         }

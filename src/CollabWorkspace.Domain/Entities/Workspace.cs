@@ -14,6 +14,10 @@ namespace CollabWorkspace.Domain.Entities
 
         public DateTime? DeletedAt { get; set; } 
 
+        public ICollection<WorkspaceMember> Members { get; set; } = new List<WorkspaceMember>();
+
+
+
 
     }
     
