@@ -7,10 +7,14 @@ namespace CollabWorkspace.Domain.Entities
 
         public Guid WorkspaceId { get; set; }
 
+        public Workspace Workspace { get; set; } = null!;
+
         public Guid UserId { get; set; }
 
         public WorkspaceRole Role { get; set; } 
 
         public DateTime JoinedAt { get; set; } = DateTime.UtcNow;
+
+       
     }
 }
