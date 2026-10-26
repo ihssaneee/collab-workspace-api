@@ -73,11 +73,17 @@ namespace CollabWorkspace.Infrastructure.Services
 
       public async Task<bool> DeleteWorkspaceAsync(Guid workspaceId, Guid ownerId, CancellationToken cancellationToken)
 {
-    int deletedRows = await _dbContext.Workspaces
-        .Where(w => w.Id == workspaceId && w.OwnerId == ownerId)
-        .ExecuteDeleteAsync(cancellationToken);
+    var workspace = await _dbContext.Workspaces
+        .FirstOrDefaultAsync(w => w.Id == workspaceId && w.OwnerId == ownerId, cancellationToken);
 
-    return deletedRows > 0;
+    if (workspace == null)
+    {
+        return false;
+    }
+
+    workspace.DeletedAt = DateTime.UtcNow;
+    await _dbContext.SaveChangesAsync(cancellationToken);
+    return true;
 }
 
 

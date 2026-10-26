@@ -40,7 +40,15 @@ namespace CollabWorkspace.Api.Controllers
                 return NotFound();
             }
 
-            return Ok(workspace);
+            var response = new WorkspaceResponse(
+                workspace.Id,
+                workspace.Name,
+                workspace.OwnerId,
+                workspace.CreatedAt,
+                workspace.UpdatedAt
+            );
+
+            return Ok(response);
         }
 
         [HttpPost]
@@ -105,14 +113,16 @@ namespace CollabWorkspace.Api.Controllers
                 return Unauthorized();
             }
 
-            var workspace = await _workspaceService.DeleteWorkspaceAsync(workspaceId, userId.Value, cancellationToken);
+            var isDeleted = await _workspaceService.DeleteWorkspaceAsync(workspaceId, userId.Value, cancellationToken);
 
-            if (workspace == false)
+            if (isDeleted == false)
             {
                 return NotFound();
             }
 
-            return Ok(workspace);
+            
+
+            return Ok(isDeleted);
         }
 
         [HttpGet("my-workspaces")]
@@ -120,7 +130,6 @@ namespace CollabWorkspace.Api.Controllers
         public async Task<IActionResult> GetMyWorkspacesAsync(CancellationToken cancellationToken)
         {
             Guid? userId = User.GetUserId();
-            Console.WriteLine($"User ID: {userId}"); // Debugging line
 
             if (userId == null)
             {
@@ -128,7 +137,15 @@ namespace CollabWorkspace.Api.Controllers
             }
 
             var workspaces = await _workspaceService.GetMyWorkspacesAsync(userId.Value, cancellationToken);
-            return Ok(workspaces);
+
+         List<WorkspaceResponse> response = [..workspaces.Select(w => new WorkspaceResponse(
+                w.Id,
+                w.Name,
+                w.OwnerId,
+                w.CreatedAt,
+                w.UpdatedAt
+            ))];
+            return Ok(response);
         }
     }
 }
