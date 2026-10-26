@@ -115,14 +115,14 @@ namespace CollabWorkspace.Api.Controllers
 
             var isDeleted = await _workspaceService.DeleteWorkspaceAsync(workspaceId, userId.Value, cancellationToken);
 
-            if (isDeleted == false)
+            if (!isDeleted)
             {
-                return NotFound();
+               return NotFound(new { message = "Workspace not found or you are not the owner." });
             }
 
             
 
-            return Ok(isDeleted);
+            return NoContent();
         }
 
         [HttpGet("my-workspaces")]
