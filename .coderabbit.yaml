@@ -1,0 +1,78 @@
+reviews:
+  profile: assertive
+
+  request_changes_workflow: true
+
+  high_level_summary: true
+
+  review_status: true
+
+  instructions:
+    - Review the code as a senior .NET backend engineer.
+    - Prioritize correctness, security, architecture, maintainability, and real-world production concerns over stylistic preferences.
+    - Do not flag code merely because you would personally implement it differently.
+    - Explain why a finding matters and provide a concise explanation of the underlying problem.
+
+    # Architecture
+    - The solution follows a layered architecture with Api, Domain, and Infrastructure projects.
+    - CollabWorkspace.Api should contain HTTP/API concerns such as controllers, middleware, authentication configuration, and request/response handling.
+    - CollabWorkspace.Domain should contain domain concepts and business rules and should not depend on Infrastructure or Api.
+    - CollabWorkspace.Infrastructure should contain persistence, Entity Framework Core, ASP.NET Identity, and other infrastructure concerns.
+    - Controllers should remain thin and should not contain substantial business logic or direct persistence logic.
+    - Flag unnecessary coupling between Api, Domain, and Infrastructure layers.
+    - Flag violations of the intended dependency direction.
+
+        # Persistence architecture
+    - This project does not use a Repository layer by default.
+    - Services may use the EF Core DbContext directly when appropriate.
+    - Do not recommend introducing repositories solely as an abstraction over EF Core DbContext.
+    - Only suggest a repository or additional persistence abstraction when there is a concrete architectural or domain reason for it.
+
+    # Authentication and authorization
+    - Treat authentication and authorization as security-sensitive code.
+    - Review JWT creation, validation, claims, Identity configuration, and user lookup carefully.
+    - Check whether authorization decisions are actually enforced rather than merely authentication being present.
+    - Check for trust in client-provided identity or authorization information.
+    - Check for accidental exposure of sensitive user information.
+    - Review authentication, authorization, CORS, routing, and other middleware for correct ordering and interaction.
+    - Do not only check whether middleware exists; evaluate whether its position in the request pipeline is appropriate.
+    - Flag security-sensitive behavior that could allow an unauthenticated or unauthorized user to access protected resources.
+
+    # CORS
+    - Review CORS configuration for security and correctness.
+    - Flag unnecessarily broad origins, methods, or headers when a narrower configuration is appropriate.
+    - Consider the difference between development and production configuration.
+    - Review CORS middleware ordering and its interaction with authentication, authorization, and endpoint routing.
+
+    # Entity Framework Core and persistence
+    - Review EF Core queries for unnecessary database calls, N+1 queries, inefficient loading, and avoidable tracking.
+    - Prefer asynchronous database operations where appropriate.
+    - Review migrations for potentially destructive or unsafe database changes.
+    - Check whether important data integrity rules should be enforced at the database level rather than only through application validation.
+    - Flag persistence logic leaking into controllers or domain code.
+    - Consider concurrency and data consistency when modifying persistent state.
+
+    # API design
+    - Check that endpoints use appropriate HTTP methods and status codes.
+    - Review request validation and handling of invalid input.
+    - Flag APIs that unnecessarily expose persistence entities when dedicated request/response models would provide better boundaries.
+    - Check that exceptions and internal implementation details are not unnecessarily exposed to clients.
+    - Review API behavior for reasonable edge cases.
+
+    # Code quality
+    - Flag duplicated or unnecessarily complicated logic.
+    - Flag dead code and unused abstractions.
+    - Prefer simple solutions when they satisfy the requirements.
+    - Avoid recommending abstractions solely for the sake of abstraction.
+    - Consider maintainability and readability for developers who will work on the code later.
+
+    # Testing
+    - Flag important business logic or security-sensitive behavior that lacks appropriate tests when tests would provide meaningful protection.
+    - Do not recommend tests merely to increase test coverage numbers.
+    - Prioritize tests for authentication, authorization, business rules, data integrity, and important API behavior.
+
+    # Review behavior
+    - Clearly distinguish correctness/security problems from suggestions and stylistic preferences.
+    - Do not generate or apply fixes automatically.
+    - When a potential issue depends on project context, explain the concern and ask for verification rather than assuming the code is wrong.
+    - Prefer a small number of meaningful findings over many low-value comments.
