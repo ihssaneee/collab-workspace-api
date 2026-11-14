@@ -109,7 +109,7 @@ public class AuthController : ControllerBase
 
         SetRefreshCookie(rotation.RawToken, rotation.ExpiresAtUtc);
 
-        return Ok(new { accessToken });
+        return Ok(new { accessToken = accessToken });
     }
 
     [Authorize]

@@ -4,10 +4,11 @@ using CollabWorkspace.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using CollabWorkspace.Infrastructure.Authentication;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using CollabWorkspace.Application.Interfaces;
 
 namespace CollabWorkspace.Infrastructure.Data
 {
-   public class CollabWorkspaceDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
+   public class CollabWorkspaceDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>, ICollabWorkspaceDbContext
     {
         public CollabWorkspaceDbContext(DbContextOptions<CollabWorkspaceDbContext> options) : base(options)
         {

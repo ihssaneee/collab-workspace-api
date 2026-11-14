@@ -4,21 +4,26 @@ using Microsoft.AspNetCore.Authorization;
 using CollabWorkspace.Api.DTOs.Workspace;
 using CollabWorkspace.Infrastructure.Services;
 using CollabWorkspace.Api.Extensions;
+using CollabWorkspace.Api.DTOs.WorkspaceMember;
+using MediatR;
+using CollabWorkspace.Application.features.Workspaces.Commands.CreateWorkspace;
 
 
 namespace CollabWorkspace.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/workspaces")]
 
     public class WorkspaceController : ControllerBase
     {
         private readonly IWorkspaceService _workspaceService;
+        private readonly ISender _sender;
 
 
-        public WorkspaceController(IWorkspaceService workspaceService)
+        public WorkspaceController(IWorkspaceService workspaceService, ISender sender)
         {
             _workspaceService = workspaceService;
+            _sender = sender;
         }
 
         [HttpGet("{workspaceId}")]
@@ -44,6 +49,13 @@ namespace CollabWorkspace.Api.Controllers
                 workspace.Id,
                 workspace.Name,
                 workspace.OwnerId,
+                workspace.Members.Select(m => new WorkspaceMemberResponse(
+                    m.Id,
+                    m.WorkspaceId,
+                    m.UserId,
+                    m.Role.ToString(),
+                    m.JoinedAt
+                )).ToList(),
                 workspace.CreatedAt,
                 workspace.UpdatedAt
             );
@@ -62,16 +74,10 @@ namespace CollabWorkspace.Api.Controllers
                 return Unauthorized();
             }
 
-            var workspace = await _workspaceService.CreateWorkspaceAsync(userId.Value, request.Name, cancellationToken);
+            var workspace = await _sender.Send(new CreateWorkspaceCommand(userId.Value,request.Name), cancellationToken);
 
-            var response = new WorkspaceResponse(
-                workspace.Id,
-                workspace.Name,
-                workspace.OwnerId,
-                workspace.CreatedAt,
-                workspace.UpdatedAt
-            );
-            return CreatedAtAction(nameof(GetWorkspaceAsync), new { workspaceId = workspace.Id }, response);
+           
+            return CreatedAtAction(nameof(GetWorkspaceAsync), new { workspaceId = workspace.Id }, workspace);
 
 
 
@@ -96,6 +102,13 @@ namespace CollabWorkspace.Api.Controllers
                 workspace.Id,
                 workspace.Name,
                 workspace.OwnerId,
+                workspace.Members.Select(m => new WorkspaceMemberResponse(
+                    m.Id,
+                    m.WorkspaceId,
+                    m.UserId,
+                    m.Role.ToString(),
+                    m.JoinedAt
+                )).ToList(),
                 workspace.CreatedAt,
                 workspace.UpdatedAt
             );
@@ -142,8 +155,17 @@ namespace CollabWorkspace.Api.Controllers
                 w.Id,
                 w.Name,
                 w.OwnerId,
+                w.Members.Select(m => new WorkspaceMemberResponse(
+                    m.Id,
+                    m.WorkspaceId,
+                    m.UserId,
+                    m.Role.ToString(),
+                    m.JoinedAt
+                )).ToList(),
                 w.CreatedAt,
                 w.UpdatedAt
+                
+                
             ))];
             return Ok(response);
         }

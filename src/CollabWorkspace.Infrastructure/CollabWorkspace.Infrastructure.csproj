@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CollabWorkspace.Domain\CollabWorkspace.Domain.csproj" />
+    <ProjectReference Include="..\CollabWorkspace.Application\CollabWorkspace.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>

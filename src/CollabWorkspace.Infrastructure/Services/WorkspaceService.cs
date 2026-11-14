@@ -47,6 +47,7 @@ namespace CollabWorkspace.Infrastructure.Services
         {
             return await _dbContext.Workspaces
             .AsNoTracking()
+            .Include(w => w.Members)
             .FirstOrDefaultAsync(w => w.Id == workspaceId && w.Members.Any(m => m.UserId == userId), cancellationToken);
             
 
@@ -55,6 +56,7 @@ namespace CollabWorkspace.Infrastructure.Services
         public async Task<Workspace?> UpdateWorkspaceAsync(Guid workspaceId, Guid ownerId, string name, CancellationToken cancellationToken)
         {
             var workspace = await _dbContext.Workspaces
+                .Include(w => w.Members)
                 .FirstOrDefaultAsync(w => w.Id == workspaceId && w.OwnerId == ownerId, cancellationToken);
 
             if (workspace == null)
@@ -89,10 +91,10 @@ namespace CollabWorkspace.Infrastructure.Services
 
         public async Task<IReadOnlyList<Workspace>> GetMyWorkspacesAsync(Guid userId, CancellationToken cancellationToken)
         {
-            return await _dbContext.WorkspaceMembers
+            return await _dbContext.Workspaces
                 .AsNoTracking()
-                .Where(member => member.UserId == userId)
-                .Select(member => member.Workspace)
+                .Include(w => w.Members)
+                .Where(w => w.Members.Any(m => m.UserId == userId))
                 .ToListAsync(cancellationToken);
              
             
