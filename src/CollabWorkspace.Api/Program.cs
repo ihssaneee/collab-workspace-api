@@ -12,6 +12,8 @@ using System.Text;
 using CollabWorkspace.Infrastructure.Authentication;
 using Microsoft.OpenApi;
 using CollabWorkspace.Infrastructure.Services;
+using System.Text.Json.Serialization;
+using CollabWorkspace.Application.Interfaces;
 
 
 
@@ -24,19 +26,25 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Register controller support so ASP.NET Core can discover controllers.
 builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
+
 
 var myAngularPolicy = "_myAngularPolicy";
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy( name: myAngularPolicy, policy =>
-    {
-        policy
-            .WithOrigins("http://localhost:4200")
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials();
-    });
+    options.AddPolicy(name: myAngularPolicy,
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200") 
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials();
+        });
 });
 
 // Register services needed by Swagger/OpenAPI.
@@ -70,6 +78,9 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddDbContext<CollabWorkspaceDbContext>(options =>
     options.UseNpgsql(
         builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<ICollabWorkspaceDbContext>(provider =>
+    provider.GetRequiredService<CollabWorkspaceDbContext>());
 
 
 // ============================================================
@@ -148,6 +159,11 @@ builder.Services
     });
 
 builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
+
+builder.Services.AddMediatR(cfg =>
+    cfg.RegisterServicesFromAssemblyContaining<ICollabWorkspaceDbContext>());
+
+builder.Services.AddScoped<IUserService, UserService>();
 
 // ============================================================
 // Authorization

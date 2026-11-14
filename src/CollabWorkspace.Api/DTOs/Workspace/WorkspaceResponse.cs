@@ -1,9 +1,11 @@
+using CollabWorkspace.Api.DTOs.WorkspaceMember;
 namespace CollabWorkspace.Api.DTOs.Workspace;
 
 public record WorkspaceResponse(
     Guid Id,
     string Name,
     Guid OwnerId,
-    DateTime CreatedAtUtc,
-    DateTime UpdatedAtUtc
+    IReadOnlyList<WorkspaceMemberResponse> Members,
+    DateTime CreatedAt,
+    DateTime UpdatedAt
 );

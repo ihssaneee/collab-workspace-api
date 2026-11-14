@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CollabWorkspace.Infrastructure\CollabWorkspace.Infrastructure.csproj" />
+    <ProjectReference Include="..\CollabWorkspace.Application\CollabWorkspace.Application.csproj" />
   </ItemGroup>
 
 </Project>
