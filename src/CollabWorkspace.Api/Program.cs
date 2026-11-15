@@ -14,6 +14,10 @@ using Microsoft.OpenApi;
 using CollabWorkspace.Infrastructure.Services;
 using System.Text.Json.Serialization;
 using CollabWorkspace.Application.Interfaces;
+using CollabWorkspace.Application.features.Workspaces.Commands.CreateWorkspace;
+using FluentValidation;
+using CollabWorkspace.Application.Behaviors;
+using CollabWorkspace.Api.Exceptions;
 
 
 
@@ -25,7 +29,6 @@ var builder = WebApplication.CreateBuilder(args);
 // ============================================================
 
 // Register controller support so ASP.NET Core can discover controllers.
-builder.Services.AddControllers();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -160,10 +163,26 @@ builder.Services
 
 builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
 
+// ============================================================
+// Application
+// ============================================================
+
 builder.Services.AddMediatR(cfg =>
-    cfg.RegisterServicesFromAssemblyContaining<ICollabWorkspaceDbContext>());
+{
+    cfg.RegisterServicesFromAssemblyContaining<ICollabWorkspaceDbContext>();
+    cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
+});
+
+builder.Services.AddValidatorsFromAssemblyContaining<CreateWorkspaceCommandValidator>();
 
 builder.Services.AddScoped<IUserService, UserService>();
+
+// ============================================================
+// Exception Handling
+// ============================================================
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 // ============================================================
 // Authorization
@@ -175,7 +194,7 @@ builder.Services.AddAuthorization();
 
 
 // ============================================================
-// Application Services
+// Authentication Services
 // ============================================================
 
 // Register our JWT token service with dependency injection.
@@ -184,6 +203,8 @@ builder.Services.AddScoped<ITokenService, JwtTokenService>();
 
 
 var app = builder.Build();
+
+app.UseExceptionHandler();
 
 
 // ============================================================
