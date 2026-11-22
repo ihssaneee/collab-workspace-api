@@ -7,6 +7,7 @@ using CollabWorkspace.Api.Extensions;
 using CollabWorkspace.Api.DTOs.WorkspaceMember;
 using MediatR;
 using CollabWorkspace.Application.features.Workspaces.Commands.CreateWorkspace;
+using CollabWorkspace.Application.features.Workspaces.Commands.UpdateWorkspace;
 
 
 namespace CollabWorkspace.Api.Controllers
@@ -93,26 +94,10 @@ namespace CollabWorkspace.Api.Controllers
             {
                 return Unauthorized();
             }
-            var workspace = await _workspaceService.UpdateWorkspaceAsync(workspaceId, userId.Value, request.Name, cancellationToken);
-            if (workspace == null)
-            {
-                return NotFound();
-            }
-            var response = new WorkspaceResponse(
-                workspace.Id,
-                workspace.Name,
-                workspace.OwnerId,
-                workspace.Members.Select(m => new WorkspaceMemberResponse(
-                    m.Id,
-                    m.WorkspaceId,
-                    m.UserId,
-                    m.Role.ToString(),
-                    m.JoinedAt
-                )).ToList(),
-                workspace.CreatedAt,
-                workspace.UpdatedAt
-            );
-            return Ok(response);
+            var updatedWorkspace = await _sender.Send(new UpdateworkspaceCommand(workspaceId, userId.Value, request.Name), cancellationToken);
+
+            return Ok(updatedWorkspace);
+
         }
 
         [HttpDelete("{workspaceId}")]
