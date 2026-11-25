@@ -23,5 +23,24 @@ namespace CollabWorkspace.Infrastructure.Services
 
             return user;
         }
+
+        //get a list of names of users given a list of user ids
+        public async Task<IReadOnlyDictionary<Guid, string?>> GetUserNamesAsync(
+             IEnumerable<Guid> userIds,
+            CancellationToken cancellationToken = default)
+        {
+            var distinctIds = userIds.Distinct().ToList();
+            if (distinctIds.Count == 0)
+            {
+                return new Dictionary<Guid, string?>();
+            }
+
+            return await _dbContext.Users
+                .AsNoTracking()
+                .Where(u => distinctIds.Contains(u.Id))
+                .Select(u => new { u.Id, u.UserName })
+                .ToDictionaryAsync(u => u.Id, u => u.UserName, cancellationToken);
+        }
+
     }
 }

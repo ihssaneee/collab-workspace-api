@@ -3,8 +3,8 @@ namespace CollabWorkspace.Api.DTOs.Workspace
 {
     public sealed record UpdateWorkspaceRequest(
 
-        [property: Required(AllowEmptyStrings = false, ErrorMessage = "Workspace name cannot be empty.")]
-        [property: StringLength(100, MinimumLength = 3)] string Name
+        [param: Required(AllowEmptyStrings = false, ErrorMessage = "Workspace name cannot be empty.")]
+        [param: StringLength(100, MinimumLength = 3)] string Name
     );
     
     
